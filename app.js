@@ -38,12 +38,52 @@ app.put("/people/:index", (req, res) => {
   /* COMPLETA EL CÓDIGO NECESARIO:
      Para que se pueda actualizar el objeto asociado al índice indicado en la URL 
    */
+
+     const index = req.params.index;
+     const person = people[index];
+   
+  
+     if (!person) {
+       return res.status(404).send("Persona no encontrada");
+     }
+   
+     
+     const editableFields = ["first_name", "last_name", "email"];
+     
+     
+     Object.keys(req.body).forEach((key) => {
+       if (editableFields.includes(key)) {
+         person[key] = req.body[key];
+       }
+     });
+   
+     
+     res.status(200).json({
+       message: "Persona actualizada con éxito",
+       updatedPerson: person,
+     });
 });
+
 
 app.delete("/people/:index", (req, res) => {
   /* COMPLETA EL CÓDIGO NECESARIO:
      Para que se pueda eliminar el objeto asociado al índice indicado en la URL 
    */
+
+     const index = parseInt(req.params.index);
+
+     // Verificar si el índice es válido
+     if (index < 0 || index >= people.length) {
+         return res.status(404).json({ error: "Persona no encontrada" });
+     }
+ 
+     // Eliminar la persona (opcionalmente puedes establecer el campo a null)
+     people[index] = null; // O puedes usar undefined o un objeto vacío {}
+ 
+     res.json({
+         message: "Persona eliminada.",
+         people // Devolver el array actualizado
+     });
 });
 
 // Esta línea inicia el servidor para que escuche peticiones en el puerto indicado
